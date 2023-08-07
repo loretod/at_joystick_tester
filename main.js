@@ -6,10 +6,10 @@ kaboom({
 setGravity(0)
 
 // load assets
-loadSound("score", "sounds/score.mp3");
-loadSound("click", "sounds/click.mp3")
-loadSprite("apple", "sprites/apple.png");
-loadSprite("coconut", "sprites/coconut.png");
+loadSound("score", "/sounds/score.mp3");
+loadSound("click", "/sounds/click.mp3")
+loadSprite("apple", "/sprites/apple.png");
+loadSprite("coconut", "/sprites/coconut.png");
 
 loadSpriteAtlas("/sprites/tileset.png", {
   "player": {
