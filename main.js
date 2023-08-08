@@ -74,7 +74,7 @@ loadSpriteAtlas("sprites/tileset.png", {
   }
 });
 
-loadSpriteAtlas("/sprites/character.png", {
+loadSpriteAtlas("sprites/character.png", {
   "target": {
     "x": 2,
     "y": 1,
