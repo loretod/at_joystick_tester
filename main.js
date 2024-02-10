@@ -10,8 +10,9 @@ loadSound("score", "sounds/score.mp3");
 loadSound("click", "sounds/click.mp3")
 loadSprite("apple", "sprites/apple.png");
 loadSprite("coconut", "sprites/coconut.png");
+loadSprite("gapple", "sprites/gapple.png");
 
-loadSpriteAtlas("sprites/tileset.png", {
+loadSpriteAtlas("/sprites/tileset.png", {
   "player": {
     "x": 128,
     "y": 0,
@@ -74,7 +75,7 @@ loadSpriteAtlas("sprites/tileset.png", {
   }
 });
 
-loadSpriteAtlas("sprites/character.png", {
+loadSpriteAtlas("/sprites/character.png", {
   "target": {
     "x": 2,
     "y": 1,
@@ -158,7 +159,7 @@ function loadTargets(n) {
   };
 }
 
-function loadInstructions(t){
+function loadInstructions(t,c){
   const frame = add([
     rect(width()/2,height()/3),
     outline(5),
@@ -170,7 +171,7 @@ function loadInstructions(t){
   ])
 
   const instruct = add([
-    text("Move to catch all the " + t + " on the screen. Then click the buttons to test them out.",{
+    text("1. Move to catch all the " + t + " on the screen. \n2. Click the buttons to test them out. \n" + c ,{
       width: width()/2.5
     }),
     pos(center()),
@@ -202,7 +203,7 @@ scene("start", () => {
 scene("mouse", () => {
   // load assets
   setBackground(0, 0, 100, .2);
-  loadInstructions("apples")
+  loadInstructions("apples","3. To scroll, press the center button and move up or down.")
 
   //Generate targets on the screen
   loadTargets("apple");
@@ -210,7 +211,7 @@ scene("mouse", () => {
   //load the player
   const player = add([
     sprite("player"),
-    pos(rand(vec2(width(),height()))),
+    pos(rand(5,width()-5),rand(5,height()-5)),
     anchor("center"),
     area(),
     scale(5),
@@ -232,6 +233,7 @@ scene("mouse", () => {
   ])
 
   addButton("Back", 150, 50, vec2(150, height() - 50), () => go("start"))
+  addButton("i", 50, 50, vec2(width()-50, height() - 50), () =>   loadInstructions("apples","3. To scroll, press the center button and move up or down."))
 
   const button_label = add([
     text("Button pressed: "),
@@ -246,9 +248,9 @@ scene("mouse", () => {
     anchor("center"),
   ])
 
-  x = [width() / 3, width() / 2, width() / 1.5]
+  x = [width()/2.5-200, width()/2.5, width() /2.5+200, width()/2.5 + 400]
   // Add children
-  for (let i = 0; i < 3; i++) {
+  for (let i = 0; i < 4; i++) {
 
     nucleus.add([
       sprite("button", { anim: "red" }),
@@ -265,33 +267,78 @@ scene("mouse", () => {
   player.onUpdate(() => {
     player.pos = mousePos();
     setCursor("none");
+
+    
     //what happens when the buttons are clicked
     if (isMousePressed("left")) {
-      button_label.text += "Left"
-      wait(1, () => {
+      button_label.text += "LEFT"
+      wait(.5, () => {
 		    button_label.text = "Button pressed:"
 	    })
       player.play("run")
       play("click")
       nucleus.children[0].play("red")
+      nucleus.children[1].play("red")
     }
+    
     if (isMousePressed("right")) {
-      button_label.text += "Right"
-      wait(1, () => {
+      button_label.text += "RIGHT"
+      wait(.5, () => {
+		    button_label.text = "Button pressed:"
+	    })
+      play("click")
+      nucleus.children[3].play("red")
+    }
+    
+    if (isMousePressed("middle")) {
+      button_label.text += "CENTER"
+      wait(.5, () => {
 		    button_label.text = "Button pressed:"
 	    })
       play("click")
       nucleus.children[2].play("red")
-    }
-    if (isMousePressed("middle")) {
-      button_label.text += "Center"
-      wait(1, () => {
-		    button_label.text = "Button pressed:"
-	    })
+    } 
+    
+  });
+
+  onScroll((UP) => {
+    	const item = add([
+    		pos(mousePos()),
+    		sprite("gapple"),
+    		anchor("center"),
+    		scale(rand(1, 3)),
+    		area({ collisionIgnore: ["particle","player"] }),
+    		body(),
+    		lifespan(1, { fade: 0.5 }),
+    		opacity(1),
+    		move(UP, rand(60, 240)),
+    		"particle",
+    	])
+    
+    	item.jump(rand(320, 640))
       play("click")
       nucleus.children[1].play("red")
-    }
-  });
+  })
+
+  onScroll((DOWN) => {
+    	const item = add([
+    		pos(mousePos()),
+    		sprite("gapple"),
+    		anchor("center"),
+    		scale(rand(1, 3)),
+    		area({ collisionIgnore: ["particle", "player"] }),
+    		body(),
+    		lifespan(1, { fade: 0.5 }),
+    		opacity(1),
+    		move(DOWN, rand(60, 240)),
+    		"particle",
+    	])
+    
+    	item.jump(rand(320, 640))
+      play("click")
+      nucleus.children[1].play("red")
+  })
+
 
   //what happens when the player touches the targets
   onCollide("target", "player", (target) => {
@@ -301,7 +348,7 @@ scene("mouse", () => {
 });
 
 scene("gamepad", () => {
-  loadInstructions("coconuts")
+  loadInstructions("coconuts","")
 
   //A function that will load the player when a gamepad is detected by the browser
   function addPlayer(gamepad) {
@@ -324,7 +371,7 @@ scene("gamepad", () => {
         play("click")
         nucleus.children[0].play("blue")
         button_label.text += "1"
-        wait(1, () => {
+        wait(.5, () => {
 		      button_label.text = "Button pressed: "
 	      })
       }
@@ -333,7 +380,7 @@ scene("gamepad", () => {
         play("click")
         nucleus.children[1].play("blue")
         button_label.text += "2"
-        wait(1, () => {
+        wait(.5, () => {
 		      button_label.text = "Button pressed:"
 	      })
       }
@@ -342,7 +389,16 @@ scene("gamepad", () => {
         play("click")
         nucleus.children[2].play("blue")
         button_label.text += "3"
-        wait(1, () => {
+        wait(.5, () => {
+		      button_label.text = "Button pressed: "
+	      })
+      }
+
+      if (gamepad.isPressed("north")) {
+        play("click")
+        nucleus.children[3].play("blue")
+        button_label.text += "4"
+        wait(.5, () => {
 		      button_label.text = "Button pressed: "
 	      })
       }
@@ -397,9 +453,9 @@ scene("gamepad", () => {
     anchor("center"),
   ])
 
-  x = [width() / 3, width() / 2, width() / 1.5]
+  x = [width()/2.5-200, width()/2.5, width() /2.5+200, width()/2.5 + 400]
   // Add children
-  for (let i = 0; i < 3; i++) {
+  for (let i = 0; i < 4; i++) {
 
     nucleus.add([
       sprite("button", { anim: "blue" }),
@@ -425,6 +481,7 @@ scene("gamepad", () => {
   })
 
   addButton("Back", 150, 50, vec2(100, height() - 70), () => go("start"))
+  addButton("i", 50, 50, vec2(width()-50, height() - 50), () =>   loadInstructions("coconuts",""))
 
 });
 
