@@ -12,7 +12,7 @@ loadSprite("apple", "sprites/apple.png");
 loadSprite("coconut", "sprites/coconut.png");
 loadSprite("gapple", "sprites/gapple.png");
 
-loadSpriteAtlas("/sprites/tileset.png", {
+loadSpriteAtlas("sprites/tileset.png", {
   "player": {
     "x": 128,
     "y": 0,
@@ -75,7 +75,7 @@ loadSpriteAtlas("/sprites/tileset.png", {
   }
 });
 
-loadSpriteAtlas("/sprites/character.png", {
+loadSpriteAtlas("sprites/character.png", {
   "target": {
     "x": 2,
     "y": 1,
